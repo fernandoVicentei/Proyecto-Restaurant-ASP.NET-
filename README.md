@@ -17,6 +17,7 @@ Se realizo con las tecnologias
 -VUE JS
 -AXIOS
 -PDFR7
+-ENTITY FRAMEWROK
 
 
 
