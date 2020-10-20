@@ -1,0 +1,49 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+    <div class="container">
+        <div class="col-md-4 col-md-push-1 animate-box" data-animate-effect="fadeInRight">
+            <div class="form-wrap">
+                <div class="tab">
+                    <div class="tab-content">
+                        <div class="tab-content-inner active" data-content="signup">
+                            <div class="danger">
+                                @ViewBag.Error
+                            </div>
+                            <h3 class="cursive-font">FerAnVi-Foot</h3>
+                            <form action="@Url.Content("~/Login/Login")" method="post">
+                                <div class="row form-group">
+                                    <div class="col-md-12">
+                                        <i class='fas fa-hamburger' style='font-size:50px;color:darkorange'></i>
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col-md-12">
+                                        <label for="date-start">Usuario</label><br />
+                                        <input type="number" name="User" class="form-control" required />
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col-md-12">
+                                        <label for="date-start">Contraseña</label><br />
+                                        <input type="password" name="Pass" class="form-control" required/>
+                                    </div>
+                                </div>
+
+                                <div class="row form-group">
+                                    <div class="col-md-12">
+                                        <input type="submit" class="btn btn-primary btn-block" value="Entrar">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+
+

@@ -1,0 +1,136 @@
+﻿@{
+    ViewBag.Title = "MostrarCarrito";
+    decimal total = 0;
+    decimal montofinal = 0;
+    var p= Session["User"];    
+}
+    <div class="container p-4" id="apv">
+        <h3 class="text-center price cursive-font">PEDIDOS </h3><br />
+        @if (Model != null)
+        {
+            <table class="table table-hover table-responsive">
+                <thead class="bg-primary">
+                <th>ID</th>
+                <th>NOMBRE</th>
+                <th>PRECIO</th>
+                <th>CANTIDAD</th>
+                <th>TIPO PEDIDO</th>
+                <th>DESCRIPCION</th>
+                <tH>TOTAL DE PRODUCTO</tH>
+                <th>...</th>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.idproducto</td>
+                            <td>@item.nombre</td>
+                            <td>@item.precio</td>
+                            <td>@item.cantidad</td>
+                            <td>
+                                @if (item.tipoPedido == 1)
+                                {
+                                    <span class="badge badge-pill badge-danger" style="background:green;">NORMAL</span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-pill badge-danger" style="background:red;">PROMOCION !</span>
+                                }
+                            </td>
+                            <td>@item.descripcion</td>
+                            <td>
+                                @{
+                                    total = @item.precio * @item.cantidad;
+                                    montofinal += total;
+                                }
+                                @total
+                            </td>
+                            <td>
+                                <form action="EliminarPedidoDCarrito" method="post">
+                                    <input type="hidden" value="@item.idproducto" name="id" />
+                                    <input type="hidden" value="@item.nombre" name="nombre" />
+                                    <button type="submit" class="btn btn-outline-danger" style="background-color:red;"><i class='far fa-trash-alt' style='font-size:22px;color:white;'></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                    <tr>
+                        <td colspan="2" class="text-center "><b>TOTAL </b></td>
+                        <td colspan="5"></td>
+                        <td colspan="1" style="background-color:skyblue;"><b>@montofinal bs </b></td>
+                    </tr>
+                </tbody>
+            </table>
+        }
+        else
+        {
+
+        }
+
+    <div class="col-lg-4 mx-auto">
+        <a class="btn btn-danger" href="../Productos/Catalogo"><- BACK</a>
+        <button class="btn btn-info" v-on:click="tipopago()">LLEVAR</button>
+        <a class="btn btn-danger" href="../Carrito/Dettallebol">DETALLE BOLETA</a>
+        @{ 
+            
+        }
+    </div>
+    </div>
+@section scripts{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.20.0/axios.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+        var app = new Vue({
+            el: '#apv',
+            data: {
+            },
+            methods: {
+                tipopago: async function () {
+                    const inputOptions = new Promise((resolve) => {
+                        setTimeout(() => {
+                            resolve({
+                                'PAYPAL': 'PAYPAL',
+                                'PAGO PERSONAL': 'PAGO PERSONAL'
+                            })
+                        }, 1000)
+                    });
+                    const { value: color } = await Swal.fire({
+                        title: 'Querido usuario seleccione el modo de Pago',
+                        input: 'radio',
+                        inputOptions: inputOptions,
+                        width: 500,
+                        inputValidator: (value) => {
+                            if (!value) {
+                                return 'Necesita seleccionar un tipo de pago!'
+                            }
+                        }
+                    });
+                    if (color == 'PAYPAL') {
+                        Swal.fire({ html: `Modo de Pago : ${color}` })
+                        //AgregarPedidosBBDD
+                        axios.post("../Carrito/AgregarPedidosBBDD", { modo:7 })
+                            .then(function (response) {
+                                console.log(response);
+                                  location.href ="../Productos/Catalogo";
+                            })
+                            .catch(function (error) {
+                                console.log(error);                                
+                            });
+                    } else {
+                        Swal.fire({ html: `Modo de Pago : ${color}` })
+                        axios.post("../Carrito/AgregarPedidosBBDD",{ modo:8 })
+                            .then(function (response){
+                                console.log(response);
+                                  location.href ="../Productos/Catalogo";                                  
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                            });
+                    }
+                }
+            }
+        });
+    </script>
+
+}
+

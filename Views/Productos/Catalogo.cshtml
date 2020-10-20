@@ -1,0 +1,229 @@
+﻿@{
+    ViewBag.Title = "Catalogo";
+}
+@Styles.Render("https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@3/dark.css")
+@Styles.Render("~/Content/style.css")
+
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+<header id="gtco-header" class="gtco-cover gtco-cover-md" role="banner" style="background-image: url(../images/portada.jpeg)" data-stellar-background-ratio="0.5">
+    <div class="overlay"></div>
+    <div class="gtco-container">
+        <div class="row">
+            <div class="col-md-12 col-md-offset-0 text-left">
+                <div class="row row-mt-15em">
+                    <div class="col-md-7 mt-text animate-box" data-animate-effect="fadeInUp">
+                        <span class="intro-text-small">Santa Cruz <a href="" target="_blank">Bolivia</a></span>
+                        <h1 class="cursive-font">Pruebalo Otra Vez !</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="gtco-section " id="appp">
+    <div class="gtco-container">
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2 text-center gtco-heading">
+                <h2 class="cursive-font primary-color">Saborea en Compañia !</h2>
+                
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-6 bg-light" style="color:orange;background-color:darkred"id="btprod" v-on:click="productomostrar()">
+                    <div class="tab-title-menu">
+                        <h2>MENUS</h2>
+                        <p> <i class="flaticon-canape"  style="color:orange;"></i> </p>
+                    </div>
+                </div>
+                <div class="col-sm-6 bg-light" style="color:orange;"id="btprom" v-on:click="promocionmostrar()">
+                    <div class="tab-title-menu">
+                        <h2>PROMOCIONES</h2>
+                        <p> <i class="flaticon-dinner" style="color:orange;"></i> </p>
+                    </div>
+                </div>                
+            </div>
+        </div><br />       
+
+        <div class="row">
+            <div id="prod">
+                <div v-for="item in lista" class="col-lg-4 col-md-4 col-sm-6 " >
+                    <div class="fh5co-card-item image-popup">
+                        @using (Html.BeginForm("Index", "Carrito"))
+                        {
+                            <a v-on:click="Imagen(item.pIm)">
+                                <figure>
+                                    <div class="overlay"><i class="ti-plus"></i></div>
+                                    <img :src=item.pIm alt="Image" class="img-responsive" width="100%">
+                                </figure>
+                                <div class="fh5co-text">
+                                    <h2 class="cursive-font">{{item.nombre}}</h2>
+                                    <p><strong>{{item.descripcion}}</strong></p>
+                                    <p><span class="price cursive-font">{{item.precio}} bs.</span></p>
+                                </div>
+                            </a>
+                            <input type="hidden" :value="item.id" name="idproducto" />
+                            <input type="hidden" :value="item.pIm" name="img" />
+                            <input type="hidden" :value="item.nombre" name="nombre" />
+                            <input type="hidden" :value="item.descripcion" name="descripcion" />
+                            <input type="hidden" :value="item.precio" name="precio" />
+                            <input type="hidden" :value="1" name="tipo" />
+                            <button type="submit" style="margin:auto;width:60px;height:60px; border-radius:50% 50%;border:solid 1px orange; padding:3px;background-color:transparent;"><i class='fas fa-pizza-slice' style='font-size:45px;color:orange'></i></button>
+                        }
+                    </div>
+                </div>
+            </div>
+            
+            <div id="promo" style="display:none;">
+                <div v-for="item in Promocion" class="col-lg-4 col-md-4 col-sm-6 ">
+                    <div class="fh5co-card-item image-popup">                    
+                        @using (Html.BeginForm("Index", "Carrito"))
+                        {
+                                <a v-on:click="Imagen(item.img)" >
+                                    <figure>
+                                        <div class="overlay"><i class="ti-plus"></i></div>
+                                        <img :src=item.img alt="Image" class="img-responsive" width="100%">
+                                    </figure>
+                                    <div class="fh5co-text">
+                                        <h2 class="cursive-font">{{item.titulo}}</h2>
+                                        <p><b>{{item.descripPromo}}</b></p>
+                                        <b> <p class=" cursive-font "style="color:orange;">Cantidad Ofertada del producto en Uno  : <br /><h2>{{item.cantidad}}</h2></p></b>
+                                        <p><span class="price cursive-font">{{item.nuevoprecio}} bs.</span></p>
+                                        <h2><span class="badge badge-danger" style="background-color:red;color:white">EN PROMOCION !</span></h2>
+                                    </div>
+                                </a>
+                                <input type="hidden" :value="item.idproducto" name="idproducto" />
+                                <input type="hidden" :value="item.img" name="img" />
+                                <input type="hidden" :value="item.titulo" name="nombre" />
+                                <input type="hidden" :value="item.descripPromo" name="descripcion" />
+                                <input type="hidden" :value="item.nuevoprecio" name="precio" />
+                                <input type="hidden" value="2" name="tipo" />
+                                <button type="submit" style="margin:auto;width:60px;height:60px; border-radius:50% 50%;border:solid 1px orange; padding:3px;background-color:transparent;"><i class='fas fa-pizza-slice' style='font-size:45px;color:orange'></i></button>
+                         }   
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div v-on:click="mostrarcarrito()" style="position:fixed;width:70px;height:70px;border-radius:50%;border:solid 3px orange;top:86%;right:2%;z-index:10;padding:2px;">
+        <i class='fas fa-cart-arrow-down' style='font-size:48px;color:orange'></i>
+    </div>
+</div>
+@Scripts.Render("https://cdn.jsdelivr.net/npm/sweetalert2@9/dist/sweetalert2.min.js")
+@section scripts{
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.20.0/axios.js"></script>
+    <script>
+        var url = "@Url.RouteUrl("Default")";
+    </script>
+    <script>
+        var appp = new Vue({
+            el: '#appp',
+            data:
+            {
+                lista: [],
+                productosNombre: '',
+                image: '',
+                imageurl: '',
+                imgprueba: '',
+                Promocion: [],
+                carritolista: [],
+                cadenacarrito: '',
+                aux: 0,
+            },
+            created: function () {
+                this.listarPr();
+                this.listaPromocion();
+                this.retornarCarrito();
+            },
+            conputed: {
+            },
+            methods: {
+                promocionmostrar: function () {                   
+                    document.getElementById("promo").style.display = "block";
+                    document.getElementById("prod").style.display = "none";
+                     document.getElementById("btprod").style.backgroundColor = "transparent";
+                    document.getElementById("btprom").style.backgroundColor ="darkred";
+                },
+                productomostrar: function () {
+                    document.getElementById("promo").style.display = "none";                        
+                    document.getElementById("prod").style.display = "block";
+                    document.getElementById("btprod").style.backgroundColor = "darkred";
+                    document.getElementById("btprom").style.backgroundColor = "transparent";
+                },
+                listarPr: function () {
+                    axios.post("../Productos/GetProductos")
+                        .then(function (response) {
+                            appp.lista = response.data;
+                            console.log(appp.lista);
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                },
+                listaPromocion: function () {
+                    axios.post("../Promocion/RecojerPromociones")
+                        .then(function (response) {
+                            console.log(response.data);
+                            appp.Promocion = response.data;
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                },
+                Imagen: function (src) {
+                    Swal.fire({
+                        title: 'Se te antojo !',
+                        text: 'Te atrevez a saborearlo ? ',
+                        imageUrl: src,
+                        imageWidth: 400,
+                        imageHeight: 200,
+                        imageAlt: 'Saborealo !',
+                    });
+                },
+                retornarCarrito: function () {
+                    axios.post("../Carrito/GetCarrito")
+                        .then(function (response) {
+                            appp.carritolista = response.data;
+                            //   console.log(appp.carritolista[0].descripcion);
+                            for (var item in appp.carritolista) {
+                                appp.cadenacarrito += "<tr><td><strong>" + appp.carritolista[appp.aux].idproducto + "</strong></td><td>" + appp.carritolista[appp.aux].nombre + "</td><td>" + appp.carritolista[appp.aux].precio + "</td>";
+                                appp.cadenacarrito += "<td>" + appp.carritolista[appp.aux].descripcion + "</td><td>" + appp.carritolista[appp.aux].cantidad + "</td><td>" + appp.carritolista[appp.aux].tipoPedido + "</td></tr>";
+                                console.table(appp.carritolista[appp.aux].descripcion + " ITEMS");
+                                appp.aux += 1;
+                            }
+                            appp.aux = 0;
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                },
+                mostrarcarrito: async function () {
+                    const { value: formValues } = await Swal.fire({
+                        title: '<i class="fas fa-hotdog mr-4" style="font-size:36px;color:orange"></i><br>Carrito <span class="cursive-font">FERANVI-FOOT  !</span>  ',
+                        html:
+                            '<table class="table  table-responsive text-center"><thead class="text-center text-dark" style="background:orange;"><th>ID</th><th>NOMBRE</th><th>PRECIO</th><TH>DESCRIPCION</TH><TH>CANTIDAD</TH><TH>TIPO</TH></thead>' +
+                            ' <tbody class="text-center">' + appp.cadenacarrito + '  </tbody></table><BR>',
+                        width: 600,
+                        focusConfirm: false,
+                        showCancelButton: true,
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Adquirir Pedidos !!',
+                        preConfirm: () => {
+                            return [
+                            ]
+                        }
+                    })
+                    if (formValues) {
+                        window.location.href = "../Carrito/MostrarCarrito";
+                    }
+
+                },
+            }
+        });
+    </script>
+
+}
+

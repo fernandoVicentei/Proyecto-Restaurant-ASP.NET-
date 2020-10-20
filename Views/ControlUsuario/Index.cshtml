@@ -1,0 +1,220 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+    <div class="container" id="app">
+        <h3 class="text-center text-primary">CONTROL DE USUARIOS</h3>
+        <div class="col">
+            <button v-on:click="btnAlta" class="btn btn-success" title="Nuevo">
+                <i class="fas fa-plus-circle fa-2x"></i>
+            </button>
+        </div>
+        <table class="table table-hover">
+            <thead>
+            <th>ID</th>
+            <th>NOMBRE COMPLETO</th>
+            <th>CLAVE</th>
+            <th>TELEFONO</th>
+            <th>ROL</th>
+            <th></th>
+            </thead>
+            <tbody>
+                <tr v-for="item in lista">
+                    <td>{{item.id}}</td>
+                    <td>{{item.Nombrecompleto}}</td>
+                    <td>{{item.contrasenia}}</td>
+                    <td>{{item.telefooo}}</td>
+                    <td>{{item.rolEmp==1?'ADMIN':'EMPLEADO'}}</td>
+                    <td>
+                        <i class='far fa-trash-alt' style='font-size:36px;color:red;' v-on:click="eliminar(item.id)"></i>
+                        <i class='far fa-edit' style='font-size:36px;color:dodgerblue;' v-on:click="editarEmp(item.id,item.Nombrecompleto,item.contrasenia,item.telefooo,item.rolEmp)"></i>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+@section scripts{
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.20.0/axios.js"></script>
+    <script>
+        var url = "@Url.RouteUrl("Default")";
+    </script>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data:
+            {
+                lista: [],
+                productosNombre: '',
+                nombre: '',
+                precio: 0,
+                contra: '',
+                tipo: '',
+                telf: '',                           
+            },
+            created: function () {
+                this.listarempleados();
+            },
+            conputed: {                
+            },
+            methods: {
+                btnAlta: async function () {
+                    const { value: formValues } = await Swal.fire({
+                        title: 'USUARIO',
+                        html:
+                            '<label classs="form-control"> Nombre Completo</label><input id="nombre" class="form-control">' +
+                            '<label classs="form-control"> Contraseña <br></label><input id="contra" class="form-control">' +
+                            '<label classs="form-control"> Telefono </label><input id="telf" type="number" class="form-control">' +                            
+                            '<label classs="form-control">Rol</label><br><select id="rol" classs="form-control"><option value="1">ADMINISTRADOR</option><option value="2">EMPLEADO</option>',                            
+                        focusConfirm: false,
+                        showCancelButton: true,
+                        confirmButtonText: 'Guardar',
+                        confirmButtonColor: '#1cc88a',
+                        cancelButtonColor: '#3885d6',
+                        //tomamos los valores
+                        preConfirm: () => {
+                            return [
+                                this.nombre = document.getElementById('nombre').value,                                
+                                this.contra = document.getElementById('contra').value,
+                                this.telf = document.getElementById('telf').value,
+                                this.tipo = document.getElementById('rol').value                                
+                            ]
+                        }
+                    });
+                    if (this.nombre == "" || this.contra == '' || this.descripcion == "" || this.telf==0) {
+                        Swal.fire({
+                            type: 'info',
+                            title: 'Datos incompletos',
+                        });
+                    } else {                   
+                        this.agregar();
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
+                        Toast.fire({
+                            type: 'success',
+                            title: 'Usuario Agregado!'
+                        })
+                    }
+                },
+                agregar: async function () {   
+                    axios.post(url + '/AgregarNuevo', { nombre: this.nombre, contra: this.contra, telefono: this.telf,rol:this.tipo } )
+                        .then(function(response) {
+                            console.log("hecho aca");
+                            app.listarempleados();
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                             Swal.fire({
+                                type: 'warning',
+                                title: 'Usuario no agregado',
+                            });                       
+                        });
+                },
+                listarempleados: function () {
+                     axios.post(url + '/RetornarEmpleados')
+                        .then(function(response) {
+                            console.log(response.data);
+                            app.lista = response.data;                          
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                },
+
+                editarEmp:async function (id,nombre,contrasenia,telefono,rol) {
+                    const { value: formValues } = await Swal.fire({
+                        title: 'USUARIO',
+                        html:
+                            '<label classs="form-control"> Nombre Completo</label><input id="nombre" value="' + nombre + '"class="form-control">' +
+                            '<label classs="form-control"> Contraseña <br></label><input id="contra" value="' + contrasenia + '" class="form-control">' +
+                            '<label classs="form-control"> Telefono </label><input id="telf" type="number" value="' + telefono + '"    class="form-control">' +                            
+                            '<label classs="form-control">Rol</label><br><select id="rol"   classs="form-control"><option value="1"   "'+(rol==1?'selected':'')+'" >ADMIN</option><option value="2"  "'+(rol==2?'selected':'')+'" >EMPLEADO</option>',                            
+                        focusConfirm: false,
+                        showCancelButton: true,
+                        confirmButtonText: 'Guardar',
+                        confirmButtonColor: '#1cc88a',
+                        cancelButtonColor: '#3885d6',
+                        //tomamos los valores
+                        preConfirm: () => {
+                            return [
+                                this.nombre = document.getElementById('nombre').value,                                
+                                this.contra = document.getElementById('contra').value,
+                                this.telf = document.getElementById('telf').value,
+                                this.tipo = document.getElementById('rol').value                                
+                            ]
+                        }
+                    });
+                    if (this.nombre == "" || this.contra == '' || this.descripcion == "" || this.telf==0) {
+                        Swal.fire({
+                            type: 'info',
+                            title: 'Datos incompletos',
+                        });
+                    } else {
+                        this.editar(id);
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
+                        Toast.fire({
+                            type: 'success',
+                            title: 'Usuario Agregado!'
+                        })
+                    }
+                }
+                , editar: function (id) {
+                    axios.post(url + '/Editar', { nombre: this.nombre, contra: this.contra, telefono: this.telf,rol:this.tipo,id:id } )
+                        .then(function(response) {
+                            console.log("hecho aca");
+                            app.listarempleados();
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                             Swal.fire({
+                                type: 'warning',
+                                title: 'Usuario no actualizado',
+                            });                       
+                        });
+                },
+                eliminar: function (id) {
+                    Swal.fire({
+                        title: 'Estas seguro de borrar el Usuario' + id + ' ?',
+                        type: 'warning',
+                        text: 'Todos los registros que tienen relacion con este usuario seran eliminados !',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3885d6',
+                        confirmButtonText: 'Borrar'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            this.borrar(id);
+                            Swal.fire(
+                                'Eliminado',
+                                'El registro ha sido borrado',
+                                'success'
+                            )
+                        }
+                    });
+                },
+                borrar: function (id) {
+                    axios.post(url + '/EliminarU', { id: id })
+                        .then(response => {
+                            console.log("hecho");
+                            this.listarempleados();
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                }
+            }
+        });
+    </script>
+}

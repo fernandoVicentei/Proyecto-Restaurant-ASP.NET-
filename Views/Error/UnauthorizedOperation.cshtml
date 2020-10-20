@@ -1,0 +1,35 @@
+﻿@{
+    ViewBag.Title = "UnauthorizedOperation";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<section class="content-header">
+    <h1 class="text-center">
+        Error, no tienes permiso
+    </h1>
+</section>
+<section class="text-center">
+    <img  src="~/images/descargar.png" width="70px"/>
+</section>
+<section class="content">
+    <div class="error-page">
+        <h2 class="headline text-warning text-center">Error</h2>
+        <div class="error-content text-center">
+            <h3><i class="fa fa-warning text-warning"></i>Sin autorización</h3>
+            @if (ViewBag.operacion != "")
+            {
+             <p>Operación @ViewBag.operacion </p>
+            }
+            @if (ViewBag.modulo != "")
+            {
+           <p>Modulo @ViewBag.modulo</p>
+             }
+            @if (ViewBag.msjeErrorExcepcion != "")
+            {
+             <p>@ViewBag.msjeErrorExcepcion</p>
+               }
+        </div>
+    </div>
+    <!-- /.error-page -->
+</section>
+
+

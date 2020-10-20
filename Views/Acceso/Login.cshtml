@@ -1,0 +1,62 @@
+﻿@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-6 col-lg-6  col-xs-12 ">
+
+            <h2 class="text-center">INICIAR SESION</h2>
+            <div class="container">
+                <div class="danger">
+                    @ViewBag.Error
+                </div>
+                <form action="@Url.Content("~/Acceso/Login")" method="post">
+                    <div class="form-group">
+                        <label>Telefono</label>
+                        <input type="number" name="User" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label>Contraseña</label>
+                        <input type="password" name="Pass" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Entrar" class="btn btn-success form-control" />
+                    </div>
+                </form>
+            </div>
+
+        </div>
+        <div class="col-sm-4 col-lg-4  col-xs-12 ">
+
+            <h2 class="text-center">REGISTRARSE</h2>
+            <div class="container">
+                <div class="danger">
+                    @ViewBag.Error
+                </div>
+                <form action="@Url.Content("~/Acceso/Nuevo")" method="post">
+                    <div class="form-group">
+                        <label>Usuario</label>
+                        <input type="text" name="User" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label>Telefono</label>
+                        <input type="number" name="telefono" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label>Ubicacion</label>
+                        <input type="text" name="ubicacion" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label>Contraseña</label>
+                        <input type="password" name="password" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Entrar" class="btn btn-success form-control" />
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>

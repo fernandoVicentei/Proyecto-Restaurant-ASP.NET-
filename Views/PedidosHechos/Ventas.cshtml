@@ -1,0 +1,141 @@
+﻿@{
+    ViewBag.Title = "Ventas";
+    decimal total = 0;
+}
+
+<div id="apventas" class="container">    
+    <table class="table table-hover">
+        <thead>
+            <th>ID</th>
+            <th>IDCLIENTE</th>
+            <th>DETALLE</th>
+            <th>FECHA</th>
+            <th>CANTIDAD PRODUCTOS</th>            
+            <th>...</th>
+            <th></th>
+        </thead>
+        <tbody>
+            <tr v-for="item in pedidosproductos" class="text-center text-uppercase">
+                <td>{{item[0].id}}</td>
+                <td>{{item[0].idcliente}}</td>
+                <td>{{item[0].detalle}}</td>
+                <td>
+                    {{item[0].fecha}}</td>
+                <td>
+                    <span class="badge badge-pill badge-success" style="background-color:green;">
+                        Productos <span class="badge " style="background-color:white; color:black;">{{item.length}}</span>
+                    </span>                    
+                </td>              
+                <td><button type="button" class="btn btn-info"  v-on:click="mostrarporPedidos(item[0].id)">DETALLES</button></td>    
+                <td><button style='font-size:16px;background-color:red;' v-on:click="eliminar(item[0].id)"  class="btn"><i class='far fa-trash-alt' style="color:white;"></i></button></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+@section scripts{
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.20.0/axios.js"></script>
+    <script>
+        var urls="@Url.RouteUrl("Default")";
+    </script>
+    <script>
+        var apventa = new Vue({
+            el: '#apventas',
+            data: {
+                pedidos: [],
+                pedidosproductos: [],
+                productPosicion:[],
+                posicion: 0,
+                cadenaproductos: '',
+                total:0,
+            },
+            created: function () {
+                this.retornarpedidos();                
+            },
+            computed: {
+
+            },
+            methods: {
+                retornarpedidos: function () {
+                    axios.post("../PedidosHechos/VentasRetorno")
+                        .then(function (response) {                           
+                            apventa.pedidos = response.data;
+                            apventa.pedidosproductos = [];
+                            apventa.productPosicion = [];
+                            apventa.posicion = apventa.pedidos[0].id;
+                            for (var item in apventa.pedidos) {
+                                if (apventa.pedidos[item].id == apventa.posicion) {                                    
+                                    apventa.productPosicion.push(apventa.pedidos[item]);
+                                } else {
+                                    apventa.pedidosproductos.push(apventa.productPosicion);
+                                    apventa.posicion = apventa.pedidos[item].id;
+                                    apventa.productPosicion = [];
+                                    apventa.productPosicion.push(apventa.pedidos[item]);                                    
+                                }                               
+                            }   
+                            apventa.pedidosproductos.push(apventa.productPosicion);                              
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                },
+                mostrarporPedidos:async  function (idpedido) {                
+                    for (var item in apventa.pedidosproductos) {
+                        if (apventa.pedidosproductos[item][0].id == idpedido) {
+                            for (var i in apventa.pedidosproductos[item]) {
+                                apventa.total += (apventa.pedidosproductos[item][i].precio * apventa.pedidosproductos[item][i].cantidad);
+                                apventa.cadenaproductos += "<tr><td>"+apventa.pedidosproductos[item][i].IdProducto+"</td><td>" + apventa.pedidosproductos[item][i].nombre + "</td><td>" + apventa.pedidosproductos[item][i].precio + "</td><td>" + apventa.pedidosproductos[item][i].cantidad + "</td>";
+                                if (apventa.pedidosproductos[item][i].tipopedido==1) {
+                                    apventa.cadenaproductos += "<td> <span class='badge badge-pill badge-danger' style='background:blue;'>NORMAL</span></td>";
+                                } else {
+                                     apventa.cadenaproductos+="<td> <span class='badge badge-pill badge-danger'  style='background:red;'>PROMOCION</span></td>";
+                                }         
+                                apventa.cadenaproductos += "<td><b>"+ (apventa.pedidosproductos[item][i].precio*apventa.pedidosproductos[item][i].cantidad)  +" bs<b></td></tr>";
+                            }                           
+                            break;
+                        }                     
+                    }       
+                    apventa.cadenaproductos += "<tr><td><b>TOTAL PEDIDO</b></td><td colspan='4'></td><td><b>" + apventa.total + " bs.</b></td></tr>";
+                    apventa.total = 0;
+                    const { value: formValues } = await Swal.fire({
+                        title: '<i class="fas fa-hotdog mr-4" style="font-size:36px;color:orange"></i><br><span class="cursive-font">FERANVI-FOOT  !</span>  ',
+                        html:
+                            '<table class="table  table-responsive text-center text-dark"><thead class="text-center text-dark" style="background:orange;"><th>ID PRODUCTO</th><th>NOMBRE</th><th>PRECIO</th><th>CANTIDAD</th><TH>TIPO PEDIDO</TH><th><b>TOTAL</b></th></thead>' +
+                            ' <tbody class="text-center">' + apventa.cadenaproductos + '  </tbody></table><BR>',
+                        width: 600,
+                        focusConfirm: false,
+                        showCancelButton: false,                        
+                        confirmButtonText: 'OK'                        
+                    });
+                    apventa.cadenaproductos = '';
+                },
+                eliminar: async function (id) {
+                    Swal.fire({
+                        title: 'Esta seguro?',
+                        text: "Si elimina este pedido , de igual modo se eliminaran los detalles de ventas del mismo",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Si, quiero borrarlo'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            axios.post("../PedidosHechos/Eliminar", {id:id})
+                                .then(function (response) {
+                                    Swal.fire(
+                                        'Eliminado!',
+                                        'Pedido Eliminado exitosamente.',
+                                        'success'
+                                    );
+                                   apventa.retornarpedidos();                                    
+                                })
+                                .catch(function (error) {
+                                    console.log(error);
+                                });                           
+                        }
+                    });
+                }
+            }
+        });
+    </script>
+}

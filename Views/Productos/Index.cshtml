@@ -1,0 +1,267 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+   <br />
+    <div id="app" class="container">
+        <h2>PRODUCTOS DEL DIA </h2>
+        <div class="col">
+            <button v-on:click="btnAlta" class="btn btn-success" title="Nuevo">
+                <i class="fas fa-plus-circle fa-2x"></i>
+            </button>
+        </div>
+        <table class="table table-hover">
+            <thead class="bg-dark">
+                <th>ID</th>
+                <th>NOMBRE</th>
+                <th>PRECIO</th>
+                <th>STOCK</th>
+                <th></th>
+                <th>TIPO</th>
+                <th>DESCRIPCION</th>
+                <th>VISIBILIDAD</th>
+                <th></th>
+            </thead>
+            <tbody>
+                <tr v-for="item in lista" class="text-center text-uppercase">
+                    <td>{{item.id}}</td>
+                    <td>{{item.nombre}}</td>
+                    <td>{{item.precio}}</td>
+                    <td>{{item.stock}}</td>
+                    <td><img :src=item.pIm width="150" height="150" class="" />  </td>
+                    <td>{{item.tipo}}</td>
+                    <td>{{item.descripcion}}</td>
+                    <td>
+                        {{item.ocultar==1 || item.ocultar==null? 'VISIBLE':'OCULTO'}}
+                    </td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <button class="btn btn-secondary" title="Editar" v-on:click="btnEditar(item.id,item.nombre,item.precio,item.stock,item.tipo,item.descripcion)">
+                                <i class="fas fa-pencil-alt">
+                                </i>
+                            </button>
+                            <button class="btn btn-danger" title="Eliminar" v-on:click="btnBorrar(item.id)">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        
+    </div>
+@section scripts{
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.20.0/axios.js"></script>
+    <script>
+        var url = "@Url.RouteUrl("Default")";
+        var url2 = "../Promocion";
+    </script>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data:
+            {               
+                lista: [],
+                productosNombre:'',
+                nombre: '',
+                precio: 0,
+                stock: 0,
+                tipo: '',
+                descripcion: '',
+                image: '',
+                imageurl: '',
+                imgprueba: '',  
+                visible:0,
+             
+            },
+            created: function () {
+                this.listarPr();               
+            },
+            conputed: {
+                images() {
+                    return this.imageurl;
+                }
+            },
+            methods: {
+                btnAlta: async function () {
+                    const { value: formValues } = await Swal.fire({
+                        title: 'NUEVO',
+                        html:
+                            '<label classs="form-control"> Nombre</label><input id="nombre" class="form-control">' +
+                            '<label classs="form-control"> Precio <br> <small>(Agregar coma si tendra decimales)</small> </label><input id="precio" class="form-control">' +
+                            '<label classs="form-control"> Stock </label><input id="stock" type="number" class="form-control">' +
+                            '<label classs="form-control"> Descripcion </label><textarea id="descripcion" type="text" class="form-control"></textarea>' +
+                            '<label classs="form-control">Tipo</label><br><select id="tipo" classs="form-control"><option value="1">Vegetariano</option><option value="2">Con Colesterol</option><option value="3">Papas</option>' +
+                            '<option value="4">Otros</option></select><br><input type="file" accept="image/*" id="im" class="form-control"/>',
+
+                        focusConfirm: false,
+                        showCancelButton: true,
+                        confirmButtonText: 'Guardar',
+                        confirmButtonColor: '#1cc88a',
+                        cancelButtonColor: '#3885d6',
+                        //tomamos los valores
+                        preConfirm: () => {
+                            return [
+                                this.nombre = document.getElementById('nombre').value,
+                                this.precio = document.getElementById('precio').value,
+                                this.stock = document.getElementById('stock').value,
+                                this.descripcion = document.getElementById('descripcion').value,
+                                this.tipo = document.getElementById('tipo').value,
+                                this.image = document.getElementById('im').files[0]
+
+                            ]
+                        }
+                    });
+                    if (this.nombre == "" || this.precio == "" || this.stock == 0 || this.descripcion == "") {
+                        Swal.fire({
+                            type: 'info',
+                            title: 'Datos incompletos',
+                        })
+                    } else {
+
+                        //this.imageurl=this.convertirImagen(this.image);
+                        this.agregar();
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
+                        Toast.fire({
+                            type: 'success',
+                            title: 'Producto Agregado!'
+                        })
+                    }
+                },
+                agregar: function () {
+                    var data = new FormData();
+                    data.append('nombre', this.nombre);
+                    data.append('tipo', this.tipo);
+                    data.append('descripcion', this.descripcion);
+                    data.append('stock', this.stock);
+                    data.append('precio', this.precio);
+                    data.append('imagen', this.image);
+                    data.append('opcion', 1);
+                    axios.post(url + '/Principal', data)
+                        .then(response => {
+                            console.log("hecho");
+                            this.listarPr();
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                },
+                btnEditar: async function (id, nombre, precio, stock, tipo, descripcion) {
+                    await Swal.fire({
+                        title: 'EDITAR',
+                        html:
+                            "<label>Nombre</label><input type='text' id='nombre'  value='" + nombre + "' class='form-control'>" +
+                            "<label>Precio <br> <small>(Agregar coma si tendra decimales)</small></label><input type='text'   id='precio'   value='" + precio + "' class='form-control'>" +
+                            "<label>Stock</label><input type='number' id='stock' value='" + stock + "' class='form-control'>" +
+                            "<label>Tipo</label><input type='text'   id='tipo'   value='" + tipo + "' class='form-control'>" +
+                            "<label>VISIBILIDAD</label><br><select id='visible' class='form-control'><option value='1'>VISIBLE</option><option value='0'>OCULTO</option> </select><br>"+
+                            "<label classs='form-control'> Descripcion </label><textarea id='descripcion' value='" + descripcion + "' class='form-control' style='display:block;'></textarea>" +
+                            "<br><input type='file' accept='image/*' id='im' class='form-control'/>",
+                        focusConfirm: false,
+                        showCancelButton: true,
+                        
+                    }).then((result) => {
+                        if (result.value) {
+                            this.nombre = document.getElementById('nombre').value,
+                                this.precio = document.getElementById('precio').value,
+                                this.stock = document.getElementById('stock').value,
+                                this.tipo = document.getElementById('tipo').value,
+                                this.image = document.getElementById('im').files[0],
+                                this.descripcion = document.getElementById('descripcion').value,
+                                this.visible = document.getElementById('visible').value,
+                                this.editar(id),
+                                Swal.fire(
+                                    'Actualizado !',
+                                    'El registro ha sido actualizado',
+                                    'success'
+                                )
+                        }
+                    });
+                },
+                editar: function (ids) {
+                    var data = new FormData();
+                    data.append('id', ids);
+                    data.append('nombre', this.nombre);
+                    data.append('tipo', this.tipo);
+                    data.append('descripcion', this.descripcion);
+                    data.append('stock', this.stock);
+                    data.append('precio', this.precio);
+                    data.append('imagen', this.image);
+                    data.append('visible', this.visible);
+                    data.append('opcion', 2);
+                    axios.post(url + '/Principal', data)
+                        .then(response => {
+                            console.log("hecho");
+                            this.listarPr();
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                },
+                convertirImagen: function (ema) {
+                    var reader = new FileReader();
+                    let urll = '';
+                    console.table(reader);
+                    reader.onload = function (e) {
+
+                        app.imageurl = e.target.result;
+                        urll = e.target.result;
+                        document.getElementById('mm').setAttribute('src', e.target.result);
+                    };
+                    reader.readAsDataURL(ema);
+                    return urll;
+                },
+                btnBorrar: async function (id) {
+                    Swal.fire({
+                        title: 'Estas seguro de borrar el Producto ' + id + ' ?',
+                        type: 'warning',
+                        text: 'Todos los registros que tienen acceso a esta, de igual forma seran eliminadas permanentemente !',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3885d6',
+                        confirmButtonText: 'Borrar'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            this.borrarP(id);
+                            Swal.fire(
+                                'Eliminado',
+                                'El registro ha sido borrado',
+                                'success'
+                            )
+                        }
+                    })
+                },
+                borrarP: function (id) {
+                    axios.post(url + '/EliminarP', { id: id })
+                        .then(response => {
+                            console.log("hecho");
+                            this.listarPr();
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                },
+                listarPr: function () {
+                    axios.post(url + "/GetProductos")
+                        .then(function (response) {                            
+                            app.lista = response.data;
+                            app.productosNombre = "<select class='form-control' id='producto'>";                            
+                            for (var i in app.lista) {
+                                app.productosNombre = app.productosNombre + " <option  value=" + app.lista[i].id + ">" + app.lista[i].nombre + "</option>";
+                            }
+                            app.productosNombre = app.productosNombre + "<option value='0'>Otros</option></select>";
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });                    
+                },
+                              
+            }
+        });
+    </script>
+}

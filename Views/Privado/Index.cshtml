@@ -1,0 +1,77 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+@Styles.Render("~/Content/style.css")
+@Styles.Render("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css");
+<style>
+    #almacen:hover  {
+        transition: .5s all;
+        background: black;
+        color: white;
+    }
+    #almacen{
+        transition:.5s all;
+        background:white;
+        color:black;
+    }
+    .color1:hover{
+        transition: .5s all;
+        background-color:white;
+        color: black;
+    }
+    .color:hover > p, p i{
+        
+        color: white;
+    }
+    
+</style>
+<div class="container-fluid"><br />
+    <div class="container text-center">
+        <h2 class="text-center "><i class='fas fa-file-export mr-3' style='font-size:36px'></i><b> REPORTES</b></h2>
+    </div>
+    <div class="row" style="height:400px">
+        <a href="../Productos/Index">
+            <div class="h-50 col-sm-4  col-lg-4 col-xs-6 " style="color:black;" id="btprod">
+                <div class="tab-title-menu color1" id="almacen" style="background-color:cadetblue">
+                    <p>Almacen</p>
+                    <p> <i class="glyphicon glyphicon-briefcase" style="color:black;"></i> </p>
+                </div>
+            </div>
+        </a>
+        <a href="../Promocion/Index">
+            <div class="col-sm-4 col-lg-4  col-xs-6 bg-light h-50" style="color:orange;" id="btprom">
+                <div class="tab-title-menu color1" style="background-color:palegoldenrod;">
+                    <p>Promociones</p>
+                    <p> <i class="glyphicon glyphicon-cutlery" style="color:black;"></i> </p>
+                </div>
+            </div>
+        </a>
+        <a href="../PedidosHechos/Ventas">
+            <div class="col-sm-4 col-lg-4 col-xs-6  bg-light h-50" style="color:black;" id="btprom">
+                <div class="tab-title-menu color1" style="background-color:limegreen">
+                    <p>Pedidos</p>
+                    <p> <i class="glyphicon glyphicon-shopping-cart" style="color:black;"></i> </p>
+                </div>
+            </div>
+        </a>
+        <a href="../ControlUsuario/">
+            <div class="col-sm-4 col-lg-4  col-xs-6 bg-light h-50" style="color:black;" id="btprod">
+                <div class="tab-title-menu color1" style="background-color:burlywood">
+                    <p>Control de Usuarios</p>
+                    <p> <i class="glyphicon glyphicon-user" style="color:black;"></i> </p>
+                </div>
+            </div>
+        </a>
+       
+        <a href="../reporte/">
+            <div class="col-sm-4  col-lg-4 col-xs-6 bg-light h-50" style="color:black;" id="btprom">
+                <div class="tab-title-menu color1" style="background-color:darksalmon">
+                    <p class="" style="color:black;">Reportes</p>
+                    <p> <i class="glyphicon glyphicon-list-alt" style="color:black;"></i> </p>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
+

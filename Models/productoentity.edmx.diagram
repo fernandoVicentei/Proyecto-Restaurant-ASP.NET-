@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="175011e7dfbb4916aa78fd932c4e0a4a" Name="Diagram1">
+        <EntityTypeShape EntityType="restaurantModel.tipoproducto" Width="1.5" PointX="5.625" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="restaurantModel.producto" Width="1.5" PointX="1.25" PointY="0.5" />
+        <AssociationConnector Association="restaurantModel.FK__tipoprodu__produ__5AEE82B9" />
+        <EntityTypeShape EntityType="restaurantModel.promocion" Width="1.5" PointX="3.375" PointY="0.875" />
+        <AssociationConnector Association="restaurantModel.FK__promocion__idpro__49C3F6B7" />
+        <EntityTypeShape EntityType="restaurantModel.cliente" Width="1.5" PointX="4.5" PointY="4.875" />
+        <EntityTypeShape EntityType="restaurantModel.detalleboleta" Width="1.5" PointX="9.125" PointY="3" />
+        <EntityTypeShape EntityType="restaurantModel.empleado" Width="1.5" PointX="6.375" PointY="3" />
+        <EntityTypeShape EntityType="restaurantModel.modopago" Width="1.5" PointX="6.5" PointY="5.125" />
+        <EntityTypeShape EntityType="restaurantModel.productopedido" Width="1.5" PointX="0.5" PointY="3.75" />
+        <AssociationConnector Association="restaurantModel.FK__detallebo__idemp__7C4F7684" />
+        <AssociationConnector Association="restaurantModel.FK__detallebo__idmod__37A5467C" />
+        <AssociationConnector Association="restaurantModel.FK__productop__idpro__31EC6D26" />
+        <EntityTypeShape EntityType="restaurantModel.pedido" Width="1.5" PointX="6.75" PointY="7.875" />
+        <AssociationConnector Association="restaurantModel.FK__pedido__idclient__2D27B809" />
+        <AssociationConnector Association="restaurantModel.FK__detallebo__idped__36B12243" />
+        <AssociationConnector Association="restaurantModel.FK__productop__idped__30F848ED" />
+        <EntityTypeShape EntityType="restaurantModel.modulo" Width="1.5" PointX="5.25" PointY="10.625" />
+        <EntityTypeShape EntityType="restaurantModel.operaciones" Width="1.5" PointX="1.125" PointY="10.5" />
+        <EntityTypeShape EntityType="restaurantModel.rol" Width="1.5" PointX="1" PointY="7.5" />
+        <EntityTypeShape EntityType="restaurantModel.rol_operacion" Width="1.5" PointX="8.5" PointY="10.375" />
+        <EntityTypeShape EntityType="restaurantModel.usuario" Width="1.5" PointX="3.75" PointY="7.5" />
+        <AssociationConnector Association="restaurantModel.FK_operaciones_modulo" />
+        <AssociationConnector Association="restaurantModel.FK_rol_operacion_operaciones" />
+        <AssociationConnector Association="restaurantModel.FK_rol_operacion_rol" />
+        <AssociationConnector Association="restaurantModel.FK_usuario_rol" />
+        <AssociationConnector Association="restaurantModel.FK__cliente__rolCli__0E6E26BF" />
+        <AssociationConnector Association="restaurantModel.FK__empleado__rolEmp__0F624AF8" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

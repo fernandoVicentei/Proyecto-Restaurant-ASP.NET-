@@ -1,0 +1,192 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+
+
+<div class="container" id="apPromo">
+    <h3 class="text-center text-info">PROMOCIONES</h3>
+          <div class="col">
+        <button v-on:click="agregarPromocion" class="btn btn-info" title="Promocion +">
+            <i class="fas fa-plus-circle fa-2x"></i>
+        </button>
+    </div>
+    <br />
+    <table class="table table-responsive table-hover">
+        <thead class="bg-primary">
+        <th>ID</th>
+        <th>TITULO</th>
+        <th>NUEVO PRECIO</th>
+        <th>CANTIDAD OFERTADA</th>
+        <th>DESCRIPCION</th>
+        <th>...</th>
+        <th></th>
+        </thead>
+        <tbody>
+            <tr v-for="item in Promocion" class="text-center text-uppercase">
+                <td>{{item.id}}</td>
+                <td>{{item.titulo}}</td>
+                <td>{{item.nuevoprecio}}</td>
+                <td>{{item.cantidad}}</td>
+                <td><p>{{item.descripPromo}}</p></td>
+                <td><img :src=item.img width="150" height="150" class="" /></td>
+                <td>
+                    <button class="btn btn-danger" title="Eliminar" v-on:click="eliminarpromocion(item.id)">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+@section scripts{
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.20.0/axios.js"></script>
+    <script>
+        var url = "@Url.RouteUrl("Default")";
+        var url2 = "../Promocion";
+    </script>
+    <script>
+        var app = new Vue({
+            el: '#apPromo',
+            data:
+            {               
+                lista: [],
+                productosNombre: '',
+                nombre: '',
+                precio: 0,
+                stock: 0,
+                tipo: '',
+                descripcion: '',
+                image: '',
+                imageurl: '',
+                imgprueba: '',               
+                Promocion: [],
+            },
+            created: function () {
+                this.listarPr();
+                this.listaPromocion();
+            },
+            conputed: {
+                images() {
+                    return this.imageurl;
+                }
+            },
+            methods: {               
+                
+                listarPr: function () {
+                    axios.post( "../Productos/GetProductos")
+                        .then(function (response) {
+                            app.lista = response.data;
+                            app.productosNombre = "<select class='form-control' id='producto'>";
+                            for (var i in app.lista) {
+                                app.productosNombre = app.productosNombre + " <option  value=" + app.lista[i].id + ">" + app.lista[i].nombre + "</option>";
+                            }
+                            app.productosNombre = app.productosNombre + "<option value='0'>Otros</option></select>";
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                },
+                agregarPromocion: async function () {
+                    let productID = '';
+                    let nuevoprecio = '';
+                    const { value: formValues } = await Swal.fire({
+                        title: 'Nueva Promocion ',
+                        html:
+                            '<br><label classs="form-control"> Seleccionar Producto</label>' + this.productosNombre +
+                            '<br><label classs="form-control"> Titulo</label><input id="nuevonombre" type="text"class="swal2-input"><br>' +
+                            '<br><label classs="form-control">Cantidad Ofertada</label><input  class="swal2-input" type="number" id="cantidad" tittle="Debe ser mayor a cero !"><br>' +
+                            '<br><label classs="form-control"> Nuevo Precio</label><input id="nuevoprecio" type="number"class="swal2-input"><br>' +
+                            '<label classs="form-control"> Descripcion </label><textarea id="descripcion" type="text" class="form-control"></textarea>' +
+                            '<br><input type="file" accept="image/*" id="im" class="form-control"/>',
+                        focusConfirm: false,
+                        preConfirm: () => {
+                            return [
+                                this.productID = document.getElementById('producto').value,
+                                this.nombre = document.getElementById('nuevonombre').value,
+                                this.stock = document.getElementById('cantidad').value,
+                                this.nuevoprecio = document.getElementById('nuevoprecio').value,
+                                this.image = document.getElementById('im').files[0],
+                                this.descripcion = document.getElementById('descripcion').value
+                            ]
+                        }
+                    });
+                    if (this.productID == "" || this.nombre == "" || this.stock == 0 || this.descripcion == "") {
+                        Swal.fire({
+                            type: 'info',
+                            title: 'Datos incompletos',
+                        });
+                    } else {
+                        this.agregarpromocion(this.productID, this.nuevoprecio);
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Promocion al Aire !!!',
+                            showConfirmButton: false,
+                            timer: 1500,
+                        });
+                    }
+                },
+
+                agregarpromocion: function (idP, precio) {
+                    var data = new FormData();
+                    data.append('idP', idP);
+                    data.append('titulo', this.nombre);
+                    data.append('cantidad', this.stock);
+                    data.append('imagen', this.image);
+                    data.append('precio', precio);
+                    data.append('descripcion', this.descripcion);
+                    axios.post(url+ '/Agregar', data)
+                        .then(function (response) {
+                            app.listaPromocion();
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                },
+                listaPromocion: function () {
+                    axios.post(url + "/RecojerPromociones")
+                        .then(function (response) {
+                            console.log(response.data);
+                            app.Promocion = response.data;
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                },
+                eliminarpromocion: async function (id) {
+                    Swal.fire({
+                        title: 'Cancelar la Promocion ?',
+                        showDenyButton: true,
+                        showCancelButton: true,
+                        confirmButtonText: `Save`,
+                    }).then((result) => {
+                        /* Read more about isConfirmed, isDenied below */
+                        if (result.isConfirmed) {
+                            axios.post(url + '/Eliminar', { id: id })
+                                .then(response => {
+                                    Swal.fire({
+                                        position: 'top-end',
+                                        icon: 'success',
+                                        title: 'Se ha cancelado la promocion exitosamente !',
+                                        showConfirmButton: false,
+                                        timer: 1500
+                                    });
+                                    app.listaPromocion();
+                                })
+                                .catch(function (error) {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Oops...',
+                                        text: 'Error al Cancelar la promocion!',
+                                        footer: '<a href>' + error + '</a>'
+                                    })
+                                });
+                        }
+                    })
+                },
+            }
+        });
+    </script>
+}
+

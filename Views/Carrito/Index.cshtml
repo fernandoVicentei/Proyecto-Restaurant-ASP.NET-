@@ -1,0 +1,78 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+
+    <div class="container m-3 b-4 p-4" style="position:relative;">
+        <img src="~/images/logo-min.jpeg" class="rounded-circle mx-auto d-block" alt="Cinque Terre" width="100px" height="100px" >
+        <h3 class="cursive-font text-center">DETALLES  </h3>
+        <form action="../Carrito/AgregarCarrito" method="post">
+            <div class="row">
+                <div class="col-lg-8 col-md-6 col-sm-6 p-4">
+                    <figure>
+                        <img src=@Model.img width="50%" height="50%" style="margin:auto;min-width:250px;align-content:space-around;" />
+                    </figure>                   
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-6 p-4">
+                    <h3 class="cursive-font">Nombre : </h3><h4><p class="cursive-font">@Model.nombre</p></h4>
+                    <h3 class="cursive-font">Descripcion : </h3> <h4><p class="cursive-font">@Model.descripcion</p></h4>
+                    <h3 class="cursive-font">Precio  : </h3> <h4><p class="cursive-font">@Model.precio bs</p></h4>
+                    <h3 class="cursive-font">Tipo : </h3> 
+                    @if (Model.tipoPedido == 1)
+                    {
+                        <h4><span class="badge bg-primary">Normal</span></h4>
+                    }
+                    else
+                    {
+                         <h4><span class="badge badge-danger">Promocionado</span></h4>
+                    }                   
+                    <label>
+                        <h3 class="cursive-font"> CANTIDAD </h3><br />
+                        <input class="form-control cursive-font " value="" name="cantidad" type="number" maxlength="2" max="10" />
+                    </label>
+                    <input type="hidden" value="@Model.nombre" name="nombre" />
+                    <input type="hidden" value="@Model.descripcion" name="descripcion" />
+                    <input type="hidden" value="@Model.precio" name="precio" />
+                    <input type="hidden" value="@Model.idproducto" name="idproducto" />
+                    <input type="hidden" value="@Model.tipoPedido" name="tipo" />
+                </div>
+            </div>
+            <div class="col-lg-12 col-md-12 p-4">
+                <a href="../Productos/Catalogo" class="btn btn-danger" >CANCELAR</a>
+                <button type="submit" class="btn btn-success">ADD CAR</button>
+            </div>
+        </form>
+    </div>
+
+@section  scripts{
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.20.0/axios.js"></script>
+    <script>
+        /*var appp = new Vue({
+            el: '#appp',
+            data:
+            {
+                lista: [],
+                productosNombre: '',
+                image: '',
+                imageurl: '',
+                imgprueba: '',
+                Promocion: [],
+            },
+            created: function () {
+                this.listarPr();
+                this.listaPromocion();
+            },
+            conputed: {
+            },
+            methods: {
+                
+            }
+        });*/
+    </script>
+
+
+
+}
+
+
+
